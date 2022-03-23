@@ -63,7 +63,7 @@ public class Main {
                         System.out.println(product);
                     break;
                 case (5):
-                    catalog.SaveFile();
+                    catalog.saveFile(LoadConfig.getPathDataCatalog(args[0]));
                     break;
                 default:
                     System.out.println("End");

@@ -1,5 +1,3 @@
-import org.jetbrains.annotations.Nullable;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -34,7 +32,7 @@ public class LoadConfig {
     public static List<String> getFilters(String path) {
         Properties prop = getProperties(path);
         String strFilters = prop.getProperty("filters");
-        List<String> filters = Arrays.asList(strFilters.split(",", -1));
+        List<String> filters = Arrays.asList(strFilters.split(","));
 
         return filters;
     }

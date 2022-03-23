@@ -2,3 +2,4 @@ cola 99.0
 pepsi 100.0
 milk 50.0
 tea 20.0
+apple 5.0

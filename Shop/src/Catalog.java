@@ -1,74 +1,57 @@
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Catalog {
     private List<Product> catalog;
     private List<String> filter;
-    private File file;
 
     public Catalog(String path, List<String> filter) {
         catalog = new ArrayList<>();
-        file = new File(path);
-        this.filter=filter;
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String str;
-            str = reader.readLine();
-            while (str != null)
-            {
-                try {
-                    addProduct(str);
-                    str = reader.readLine();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        this.filter = filter;
+
+        try {
+            Files.readAllLines(Paths.get(path)).forEach(this::addProduct);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void SaveFile() {
-        try (FileWriter writer = new FileWriter(file, false)) {
-            String text = FileString();
-            writer.write(text);
-            writer.flush();
+    public void saveFile(String path) {
+        try {
+            String text = fileString();
+            Files.write(Paths.get(path), text.getBytes());
         } catch (Exception e) {
             System.out.println("Error save");
         }
     }
 
-    public String FileString(){
-        StringBuilder stringBuilder = new StringBuilder();
-        for (Product p : catalog) {
-            stringBuilder.append(p.toString() + "\n");
-        }
-        return stringBuilder.toString();
+    public String fileString() {
+        return catalog.stream().map(Product::toString).collect(Collectors.joining("\n"));
     }
 
-    public void setFilter(ArrayList<String> filter) {
-        this.filter = filter;
-    }
-
-    public boolean addProduct(String str) throws Exception {
+    public boolean addProduct(String str) {
         if (checkFilters(str))
             return false;
         String[] a = str.trim().split(" ");
+        try {
+            Product product = new Product(a[0], Double.parseDouble(a[1]));
+            catalog.add(product);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        Product product = new Product(a[0], Double.parseDouble(a[1]));
-        catalog.add(product);
         return true;
     }
 
     public boolean checkFilters(String str) {
-        for (String flt : filter) {
-            Pattern pattern = Pattern.compile(flt);
+        List<Pattern> patterns = filter.stream().map(Pattern::compile).collect(Collectors.toList());
+        for (Pattern pattern : patterns) {
             Matcher matcher = pattern.matcher(str);
             if (matcher.find()) return true;
         }
@@ -85,13 +68,7 @@ public class Catalog {
     }
 
     public Product searchProduct(String name) {
-        Product product = new Product();
-        try {
-            product = catalog.stream().filter(p -> p.getName().equals(name.trim())).findFirst().orElse(new Product());
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-        return product;
+        return catalog.stream().filter(p -> p.getName().equals(name.trim())).findFirst().orElse(new Product());
     }
 
     @Override

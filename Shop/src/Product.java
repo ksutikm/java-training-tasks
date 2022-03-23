@@ -1,19 +1,17 @@
-import java.util.Objects;
-
 public class Product {
     private String name;
-    private double prise;
+    private double price;
 
     public Product() {
         this.name = "None";
-        this.prise = 0.0;
+        this.price = 0.0;
     }
 
-    public Product(String name, double prise) throws Exception {
+    public Product(String name, double price) throws Exception {
         this.name = name;
-        if (prise < 0)
-            throw new Exception("Prise error");
-        this.prise = prise;
+        if (price < 0)
+            throw new Exception("Price error");
+        this.price = price;
     }
 
     public String getName() {
@@ -22,14 +20,6 @@ public class Product {
 
     @Override
     public String toString() {
-        return String.format("%s %s", name, prise);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Product product = (Product) o;
-        return Double.compare(prise, product.prise) == 0 && Objects.equals(name, product.name);
+        return String.format("%s %s", name, price);
     }
 }
