@@ -58,7 +58,7 @@ public class Catalog {
         return false;
     }
 
-    public boolean deleteProduct(String nameProduct) throws Exception {
+    public boolean deleteProduct(String nameProduct) {
         Product product = searchProduct(nameProduct);
         if (!product.getName().equals("None")) {
             catalog.remove(product);

@@ -10,7 +10,7 @@ public class Product {
     public Product(String name, double price) throws Exception {
         this.name = name;
         if (price < 0)
-            throw new Exception("Price error");
+            throw new MyException("Negative price indicated");
         this.price = price;
     }
 
