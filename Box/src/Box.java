@@ -1,5 +1,8 @@
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class Box<T> {
     private final int boxSize;
@@ -38,5 +41,13 @@ public class Box<T> {
         if (currentSize == 0)
             throw new Exception("Box is empty!");
         box.remove(currentSize--);
+    }
+
+    public List<T> getAll(Predicate<? super T> predicate) {
+        return box.stream().filter(predicate).collect(Collectors.toList());
+    }
+
+    public void putAll(List<? extends T> list) {
+        box.addAll(list);
     }
 }
