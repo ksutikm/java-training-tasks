@@ -1,34 +1,32 @@
 import java.lang.reflect.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Container {
-    public Object doSomething(Class clazz) {
+    public Object createInstance(Class clazz) throws IllegalArgumentException {
         if (clazz.isAnnotationPresent(ControlledObject.class)){
-            System.out.println("Class annotated");
+            System.out.println("create instance ; name  -  " + clazz.getAnnotation(ControlledObject.class));
         } else {
-            System.err.println("Class is not annotation!");
+            throw new IllegalArgumentException("Class is not annotated");
         }
 
-        Method[] methods = clazz.getMethods();
-        if (methods.length != 1) {
-            System.err.println("This class must have one method!");
-        }
-        Method method = methods[0];
-
-        if (method.isAnnotationPresent(StartObject.class)) {
-            System.out.println("Method annotated");
+        Method method = null;
+        List<Method> methods = Arrays.stream(clazz.getMethods())
+                .filter(value -> value.isAnnotationPresent(StartObject.class))
+                .collect(Collectors.toList());
+        if (methods.size() > 1) {
+            throw new IllegalArgumentException("This class must have one method with StartObject annotation");
         } else {
-            System.err.println("Method is not annotation!");
+            method = methods.get(0);
         }
-
-        Object object = null;
 
         try {
-            object = clazz.newInstance();
-            method.invoke(clazz);
+            method.invoke(clazz.newInstance());
+            return clazz.newInstance();
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
         }
-
-        return object;
+        return null;
     }
 }
