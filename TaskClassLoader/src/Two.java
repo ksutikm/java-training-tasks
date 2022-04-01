@@ -7,9 +7,7 @@ import java.net.URLClassLoader;
 import java.nio.file.Paths;
 
 public class Two {
-    public static void main(String[] args) throws URISyntaxException, MalformedURLException,
-            ClassNotFoundException, NoSuchMethodException, InvocationTargetException,
-            InstantiationException, IllegalAccessException {
+    public static void main(String[] args) throws Exception {
         URL url = Two.class.getResource("One.class");
         URL classLoaderURL = Paths.get(url.toURI()).getParent().toUri().toURL();
         URLClassLoader urlClassLoader = new URLClassLoader(new URL[]{classLoaderURL});
