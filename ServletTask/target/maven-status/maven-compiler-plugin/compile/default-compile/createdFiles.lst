@@ -1,2 +1,4 @@
+CrudInterface.class
 HelloWorld.class
-Main.class
+StudentSqlRequest.class
+ServletTable.class
