@@ -43,19 +43,8 @@ public class ServletTable extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-
-        StringBuffer stringBuffer = new StringBuffer();
-        String line = null;
-
-        try (BufferedReader reader = request.getReader()) {
-            while ((line = reader.readLine()) != null)
-                stringBuffer.append(line);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
         ObjectMapper mapper = new ObjectMapper();
-        Student student = mapper.readValue(stringBuffer.toString(), Student.class);
+        Student student = mapper.readValue(request.getReader(), Student.class);
 
         StudentSqlRequest studentSqlRequest = new StudentSqlRequest();
 
