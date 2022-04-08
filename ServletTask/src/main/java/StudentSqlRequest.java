@@ -1,8 +1,12 @@
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-public class StudentSqlRequest implements CrudInterface {
+public class StudentSqlRequest implements CrudInterface<Student> {
     private static final String url = "jdbc:postgresql://127.0.0.1:5432/test";
     private static final String username = "postgres";
     private static final String password = "masterkey";
@@ -52,7 +56,7 @@ public class StudentSqlRequest implements CrudInterface {
     }
 
     @Override
-    public void update(Student student, int id) {
+    public String update(Student student, int id) {
         String sql = getUpdateRequest(student, id);
 
         try(Connection con = DriverManager.getConnection(url, username, password);
@@ -62,6 +66,7 @@ public class StudentSqlRequest implements CrudInterface {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return sql;
     }
 
     @Override
@@ -77,40 +82,43 @@ public class StudentSqlRequest implements CrudInterface {
         }
     }
 
+    private Map<String, Function<Student, String>> getParams() {
+        Map<String, Function<Student, String>> params = new HashMap<>();
+        params.put("id", Student::getStringId);
+        params.put("name", Student::getName);
+        params.put("gender", Student::getGender);
+        params.put("student_number", Student::getStringStudentNumber);
+
+        return params;
+    }
+
     private String getUpdateRequest(Student student, int id) {
-        int fieldCount = 0;
         StringBuilder sql = new StringBuilder()
                 .append("Update student set ");
 
-        if (student.getId() != -1) {
-            sql.append("id = " + student.getId());
-            fieldCount++;
-        }
-
-        if (student.getName() != "") {
-            if (fieldCount != 0) {
-                sql.append(", ");
-            }
-            sql.append(String.format("name = '%s'", student.getName()));
-            fieldCount++;
-        }
-
-        if (student.getGender() != "") {
-            if (fieldCount != 0) {
-                sql.append(", ");
-            }
-            sql.append(String.format("gender = '%s'", student.getGender()));
-            fieldCount++;
-        }
-
-        if (student.getStudentNumber() != -1) {
-            if (fieldCount != 0) {
-                sql.append(", ");
-            }
-            sql.append("student_number = " + student.getStudentNumber());
-        }
+        Map<String, Function<Student, String>> params = getParams();
+        String updateParams = params.entrySet().stream()
+                .filter(entry -> !entry.getValue().apply(student).equals("-1"))
+                .map(entry -> entry.getKey() + "=" + helper(entry.getValue().apply(student)))
+                .collect(Collectors.joining(","));
+        sql.append(updateParams);
 
         return sql.append(" where id = " + id + ";").toString();
+    }
+
+    private String helper(String mapValue) {
+        boolean isDigit;
+        try {
+            Integer.parseInt(mapValue);
+            isDigit = true;
+        } catch (NumberFormatException e) {
+            isDigit = false;
+        }
+
+        if (isDigit) {
+            return mapValue;
+        }
+        return String.format("'%s'", mapValue);
     }
 
     public String getHtml() {

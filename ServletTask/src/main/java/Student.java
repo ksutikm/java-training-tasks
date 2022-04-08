@@ -10,8 +10,8 @@ public class Student {
 
     public Student() {
         id = -1;
-        name = "";
-        gender = "";
+        name = "-1";
+        gender = "-1";
         studentNumber = -1;
     }
 
@@ -41,6 +41,9 @@ public class Student {
     public int getId() {
         return id;
     }
+    public String getStringId() {
+        return String.valueOf(id);
+    }
 
     public String getName() {
         return name;
@@ -52,6 +55,9 @@ public class Student {
 
     public int getStudentNumber() {
         return studentNumber;
+    }
+    public String getStringStudentNumber() {
+        return String.valueOf(studentNumber);
     }
 
     @Override

@@ -49,13 +49,14 @@ public class ServletTable extends HttpServlet {
 
         StudentSqlRequest studentSqlRequest = new StudentSqlRequest();
 
+        String sql = null;
         switch (action) {
             case "add":
                 studentSqlRequest.add(student);
                 break;
             case "update":
                 String id = request.getParameter("id");
-                studentSqlRequest.update(student, Integer.parseInt(id));
+                sql = studentSqlRequest.update(student, Integer.parseInt(id));
         }
 
         studentSqlRequest.read();
@@ -64,6 +65,7 @@ public class ServletTable extends HttpServlet {
         PrintWriter printWriter = response.getWriter();
         if (studentSqlRead != "") {
             printWriter.write(studentSqlRead);
+            printWriter.write("\n\n" + sql);
         } else {
             printWriter.write("You have some problems, action: " + action);
         }
