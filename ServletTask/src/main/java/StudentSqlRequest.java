@@ -1,25 +1,40 @@
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class StudentSqlRequest implements CrudInterface {
     private static final String url = "jdbc:postgresql://127.0.0.1:5432/test";
     private static final String username = "postgres";
     private static final String password = "masterkey";
 
+    private List<Student> students;
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public StudentSqlRequest() {
+        students = new ArrayList<>();
+    }
+
     @Override
-    public String read() {
+    public void read() {
         String sql = "Select id, name, gender, student_number from student;";
-        String resp = "";
 
         try(Connection con = DriverManager.getConnection(url, username, password);
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
         ) {
-            resp = getHtml(rs);
+            while (rs.next()) {
+                int id = rs.getInt(1);
+                String name = rs.getString(2);
+                String gender = rs.getString(3);
+                int studentNumber = rs.getInt(4);
+                students.add(new Student(id, name, gender, studentNumber));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-        return resp;
     }
 
     @Override
@@ -98,7 +113,7 @@ public class StudentSqlRequest implements CrudInterface {
         return sql.append(" where id = " + id + ";").toString();
     }
 
-    private String getHtml(ResultSet rs) throws SQLException {
+    public String getHtml() {
         StringBuilder stringBuilder = new StringBuilder()
                 .append("<table>\n" +
                         "<tr><th>Id</th>" +
@@ -106,16 +121,12 @@ public class StudentSqlRequest implements CrudInterface {
                         "<th>Gender</th>" +
                         "<th>Student Number</th></tr>");
 
-        while (rs.next()) {
-            int id = rs.getInt(1);
-            String name = rs.getString(2);
-            String gender = rs.getString(3);
-            int studentNumber = rs.getInt(4);
-            stringBuilder.append("<tr><td>" + id + "</td>")
-                    .append("<td>" + name + "</td>")
-                    .append("<td>" + gender + "</td>")
-                    .append("<td>" + studentNumber + "</td></tr>");
-        }
+        students.forEach(student -> {
+            stringBuilder.append("<tr><td>" + student.getId() + "</td>")
+                    .append("<td>" + student.getName() + "</td>")
+                    .append("<td>" + student.getGender() + "</td>")
+                    .append("<td>" + student.getStudentNumber() + "</td></tr>");
+        });
 
         return stringBuilder.append("</table>").toString();
     }

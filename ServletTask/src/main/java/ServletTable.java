@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 
@@ -21,12 +20,14 @@ public class ServletTable extends HttpServlet {
 
         switch (action) {
             case "get":
-                studentRead = student.read();
+                student.read();
+                studentRead = student.getHtml();
                 break;
             case "delete":
                 String id = request.getParameter("id");
                 student.delete(parseInt(id));
-                studentRead = student.read();
+                student.read();
+                studentRead = student.getHtml();
         }
 
         response.setContentType("text/html");
@@ -57,7 +58,8 @@ public class ServletTable extends HttpServlet {
                 studentSqlRequest.update(student, Integer.parseInt(id));
         }
 
-        String studentSqlRead = studentSqlRequest.read();
+        studentSqlRequest.read();
+        String studentSqlRead = studentSqlRequest.getHtml();
         response.setContentType("text/html");
         PrintWriter printWriter = response.getWriter();
         if (studentSqlRead != "") {

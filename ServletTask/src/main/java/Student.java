@@ -15,6 +15,13 @@ public class Student {
         studentNumber = -1;
     }
 
+    public Student(int id, String name, String gender, int studentNumber) {
+        this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.studentNumber = studentNumber;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -25,16 +32,6 @@ public class Student {
 
     public void setGender(String gender) {
         this.gender = gender;
-    }
-
-    @Override
-    public String toString() {
-        return "Student{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", gender='" + gender + '\'' +
-                ", studentNumber=" + studentNumber +
-                '}';
     }
 
     public void setStudentNumber(int studentNumber) {
@@ -55,5 +52,15 @@ public class Student {
 
     public int getStudentNumber() {
         return studentNumber;
+    }
+
+    @Override
+    public String toString() {
+        return "Student{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", gender='" + gender + '\'' +
+                ", studentNumber=" + studentNumber +
+                '}';
     }
 }
