@@ -1,5 +1,6 @@
 CrudInterface.class
 HelloWorld.class
+LogFilter.class
 Student.class
 StudentSqlRequest.class
 ServletTable.class

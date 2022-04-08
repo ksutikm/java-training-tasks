@@ -14,8 +14,8 @@ import static java.lang.Integer.parseInt;
 @WebServlet("/table")
 public class ServletTable extends HttpServlet {
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
         StudentSqlRequest student = new StudentSqlRequest();
         String studentRead = "";
 
@@ -24,13 +24,13 @@ public class ServletTable extends HttpServlet {
                 studentRead = student.read();
                 break;
             case "delete":
-                String id = req.getParameter("id");
+                String id = request.getParameter("id");
                 student.delete(parseInt(id));
                 studentRead = student.read();
         }
 
-        resp.setContentType("text/html");
-        PrintWriter printWriter = resp.getWriter();
+        response.setContentType("text/html");
+        PrintWriter printWriter = response.getWriter();
         if (studentRead != "") {
             printWriter.write(studentRead);
         } else {
@@ -41,13 +41,13 @@ public class ServletTable extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
 
         StringBuffer stringBuffer = new StringBuffer();
         String line = null;
 
-        try (BufferedReader reader = req.getReader()) {
+        try (BufferedReader reader = request.getReader()) {
             while ((line = reader.readLine()) != null)
                 stringBuffer.append(line);
         } catch (Exception e) {
@@ -64,13 +64,13 @@ public class ServletTable extends HttpServlet {
                 studentSqlRequest.add(student);
                 break;
             case "update":
-                String id = req.getParameter("id");
+                String id = request.getParameter("id");
                 studentSqlRequest.update(student, Integer.parseInt(id));
         }
 
         String studentSqlRead = studentSqlRequest.read();
-        resp.setContentType("text/html");
-        PrintWriter printWriter = resp.getWriter();
+        response.setContentType("text/html");
+        PrintWriter printWriter = response.getWriter();
         if (studentSqlRead != "") {
             printWriter.write(studentSqlRead);
         } else {
